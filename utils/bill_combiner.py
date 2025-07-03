@@ -13,7 +13,7 @@ PAGE_WIDTH, PAGE_HEIGHT = A4
 # This rectangle defines the region to extract from the *original* PDF page.
 # (x0, y0, x1, y1) where (0,0) is top-left, and Y increases downwards in PyMuPDF.
 # Based on the "image of cropped bill" you provided, the desired content ends around Y=420 points from the top.
-CROP_RECT = fitz.Rect(0, 0, PAGE_WIDTH, 420)
+CROP_RECT = fitz.Rect(0, 0, PAGE_WIDTH, 350)
 # This will extract a section of width PAGE_WIDTH (595 points) and height 420 points.
 # This cropped section will contain the QR code, customer address, product details, barcode, etc.,
 # but will exclude the "BILL TO / SHIP TO" block and the full financial table.
