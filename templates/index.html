@@ -2,123 +2,372 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Leaflet Generator</title>
+    <title>Meesho PDF Utility</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #5a189a; /* Meesho-like purple */
+            --primary-dark: #3c096c;
+            --secondary-color: #7b2cbf;
+            --text-color: #333;
+            --light-bg: #f5f5f5;
+            --white-bg: #ffffff;
+            --border-color: #ddd;
+            --success-light: #e0ffe0;
+            --success-dark: #28a745;
+            --error-light: #ffe6e6;
+            --error-dark: #dc3545;
+        }
+
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
             margin: 0;
             padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 600px;
-            margin: 60px auto;
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            max-width: 550px; /* Slightly wider for tabs */
+            width: 90%; /* Responsive width */
+            background: var(--white-bg);
+            padding: 2.5rem; /* Increased padding */
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); /* Softer shadow */
+            box-sizing: border-box; /* Include padding in width */
         }
 
         h1 {
             text-align: center;
-            color: #5a189a;
-            margin-bottom: 30px;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem; /* Space between icon and text */
+        }
+
+        h1 .icon {
+            font-size: 2rem; /* Size of the icon */
+        }
+
+        /* Tab Buttons Styling */
+        .tab-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #777; /* Softer color for inactive tabs */
+            cursor: pointer;
+            transition: color 0.3s ease, border-bottom 0.3s ease;
+            border-bottom: 3px solid transparent;
+            outline: none; /* Remove outline on focus */
+        }
+        .tab-button.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+        }
+        .tab-button:hover {
+            color: var(--primary-color);
+        }
+
+        /* Form Section Styling (for tab content) */
+        .form-section {
+            display: none; /* Hidden by default */
+        }
+        .form-section.active {
+            display: block; /* Shown when active */
         }
 
         label {
-            font-weight: bold;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block; /* Make label take full width */
+            color: var(--text-color);
         }
 
         input[type="file"] {
             width: 100%;
-            padding: 10px;
-            margin-top: 8px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            padding: 0.8rem 1rem; /* Adjusted padding */
+            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px; /* Slightly more rounded */
+            font-size: 1rem;
+            box-sizing: border-box; /* Important for consistent width */
+            background-color: var(--white-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: border-color 0.3s ease;
         }
 
-        button {
-            background-color: #5a189a;
+        input[type="file"]::file-selector-button {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 15px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        input[type="file"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        button[type="submit"] {
+            background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 12px 20px;
-            margin-top: 20px;
-            border-radius: 6px;
+            padding: 0.9rem 1.5rem;
+            margin-top: 1rem;
+            border-radius: 8px;
             width: 100%;
-            font-size: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
         }
 
-        button:hover {
-            background-color: #3c096c;
+        button[type="submit"]:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px); /* Slight lift on hover */
         }
 
+        button[type="submit"]:active {
+            transform: translateY(0);
+        }
+
+        /* Alert/Flash Messages Styling */
         .alert {
-            background-color: #ffe6e6;
-            color: #b00020;
-            border: 1px solid #ffcccc;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 6px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            list-style: none; /* Remove bullet points */
+            padding-left: 1.5rem; /* Adjust padding for list */
+        }
+        .alert strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        .alert ul {
+            margin: 0;
+            padding: 0;
+        }
+        .alert li {
+            margin-bottom: 0.3rem;
         }
 
+        /* Specific colors for success and error alerts */
+        .alert.error {
+            background-color: var(--error-light);
+            color: var(--error-dark);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+        .alert.success {
+            background-color: var(--success-light);
+            color: var(--success-dark);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+
+        /* Success Box for download link */
         .success-box {
-            background-color: #e0ffe0;
-            border: 1px solid #77dd77;
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 30px;
+            background-color: var(--success-light);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            color: var(--success-dark);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            text-align: center;
         }
 
-        a {
-            color: #5a189a;
+        .success-box h3 {
+            color: var(--success-dark);
+            margin-top: 0;
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+        }
+
+        .success-box a {
+            color: var(--primary-color);
             text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+            word-break: break-all; /* Ensure long filenames wrap */
+            display: inline-block; /* Allows padding and margin */
+            margin-top: 0.5rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background-color: rgba(90, 24, 154, 0.05);
         }
 
-        a:hover {
+        .success-box a:hover {
+            color: var(--primary-dark);
             text-decoration: underline;
+            background-color: rgba(90, 24, 154, 0.1);
         }
 
+        .success-box .process-another {
+            margin-top: 1.5rem;
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+        .success-box .process-another a {
+            color: var(--primary-color);
+            font-weight: 600;
+            background: none;
+            padding: 0;
+        }
+        .success-box .process-another a:hover {
+            text-decoration: underline;
+            background: none;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>📄 Meesho Leaflet Generator</h1>
+        <h1><span class="icon">📄</span> Meesho PDF Utility</h1>
 
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
-            <div class="alert">
-              <strong>Error:</strong>
-              <ul>
-                {% for message in messages %}
+            {% for category, message in messages %}
+              <div class="alert {{ category }}">
+                <strong>
+                    {% if category == 'error' %}Uh oh! Something went wrong:{% else %}Success!{% endif %}
+                </strong>
+                <ul>
                   <li>{{ message }}</li>
-                {% endfor %}
-              </ul>
-            </div>
+                </ul>
+              </div>
+            {% endfor %}
           {% endif %}
         {% endwith %}
 
-        <form action="{{ url_for('process_file') }}" method="post" enctype="multipart/form-data">
-            <label for="pdf_file">Upload Meesho Order Label (PDF):</label>
-            <input type="file" name="pdf_file" id="pdf_file" accept=".pdf" required>
+        <div class="tab-buttons">
+            <button class="tab-button" id="leaflet-tab" onclick="showTab('leaflet')">
+                <i class="fas fa-file-alt"></i> Leaflet Generator
+            </button>
+            <button class="tab-button" id="cropper-tab" onclick="showTab('cropper')">
+                <i class="fas fa-crop"></i> Bill Cropper
+            </button>
+        </div>
 
-            <button type="submit">🚀 Generate Leaflets</button>
-        </form>
+        <div id="leaflet-section" class="form-section">
+            <form action="{{ url_for('process_leaflets_file') }}" method="post" enctype="multipart/form-data">
+                <label for="pdf_file_leaflet">Upload Meesho Order Label (PDF):</label>
+                <input type="file" name="pdf_file" id="pdf_file_leaflet" accept=".pdf" required>
+                <button type="submit"><i class="fas fa-rocket"></i> Generate Leaflets</button>
+            </form>
 
-        {% if generated_filename %}
-            <div class="success-box">
-                <h3>✅ Leaflets Ready!</h3>
-                <p>Download your generated leaflet PDF:</p>
-                <a href="{{ url_for('download_file', filename=generated_filename) }}">{{ generated_filename }}</a>
-                <br><br>
-                <a href="{{ url_for('upload_form') }}">Process another file</a>
-            </div>
-        {% endif %}
+            {% if generated_filename and feature == 'leaflet' %}
+                <div class="success-box">
+                    <h3><i class="fas fa-check-circle"></i> Leaflets Ready!</h3>
+                    <p>Click below to download your personalized leaflet PDF:</p>
+                    <a href="{{ url_for('download_file', filename=generated_filename) }}" download>
+                        {{ generated_filename }}
+                    </a>
+                    <p class="process-another">
+                        Need to process more? <a href="{{ url_for('upload_form') }}">Generate more leaflets</a>
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div id="cropper-section" class="form-section">
+            <form action="{{ url_for('process_combined_bills_file') }}" method="post" enctype="multipart/form-data">
+                <label for="pdf_file_cropper">Upload Full Meesho Bill (PDF) for Cropping:</label>
+                <input type="file" name="pdf_file" id="pdf_file_cropper" accept=".pdf" required>
+                <button type="submit"><i class="fas fa-cut"></i> Generate 4-up Cropped Bills</button>
+            </form>
+
+            {% if generated_cropped_filename and feature == 'cropper' %}
+                <div class="success-box">
+                    <h3><i class="fas fa-check-circle"></i> Cropped Bills Ready!</h3>
+                    <p>Click below to download your 4-up cropped bill PDF:</p>
+                    <a href="{{ url_for('download_file', filename=generated_cropped_filename) }}" download>
+                        {{ generated_cropped_filename }}
+                    </a>
+                    <p class="process-another">
+                        Need to crop more? <a href="{{ url_for('upload_form', feature='cropper') }}">Crop another bill</a>
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+
     </div>
+
+    <script>
+        // Function to show the selected tab and hide others
+        function showTab(tabId) {
+            // Hide all form sections
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            // Deactivate all tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show the selected form section
+            document.getElementById(tabId + '-section').classList.add('active');
+            // Activate the corresponding tab button
+            document.getElementById(tabId + '-tab').classList.add('active');
+
+            // Clear previous messages when switching tabs for cleaner UX
+            document.querySelectorAll('.alert').forEach(alert => {
+                alert.style.display = 'none';
+            });
+        }
+
+        // Logic to set the active tab on page load (based on Flask context or URL parameters)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check the 'feature' variable passed from Flask (app.py)
+            const activeFeature = "{{ feature }}"; // 'leaflet' or 'cropper'
+
+            if (activeFeature) {
+                showTab(activeFeature);
+            } else {
+                // Default to leaflet tab if no specific feature is indicated
+                showTab('leaflet');
+            }
+        });
+    </script>
 
 </body>
 </html>
