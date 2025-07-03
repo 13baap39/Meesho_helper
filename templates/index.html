@@ -19,6 +19,8 @@
             --success-dark: #28a745;
             --error-light: #ffe6e6;
             --error-dark: #dc3545;
+            --info-light: #e0f7fa; /* New color for informational messages/tabs */
+            --info-dark: #00bcd4;
         }
 
         body {
@@ -35,7 +37,7 @@
         }
 
         .container {
-            max-width: 550px; /* Slightly wider for tabs */
+            max-width: 650px; /* Wider for three tabs */
             width: 90%; /* Responsive width */
             background: var(--white-bg);
             padding: 2.5rem; /* Increased padding */
@@ -70,14 +72,16 @@
         .tab-button {
             background: none;
             border: none;
-            padding: 0.8rem 1.5rem;
-            font-size: 1.05rem;
+            padding: 0.8rem 1rem; /* Slightly reduced horizontal padding for 3 tabs */
+            font-size: 1.0rem; /* Slightly reduced font size for 3 tabs */
             font-weight: 600;
             color: #777; /* Softer color for inactive tabs */
             cursor: pointer;
             transition: color 0.3s ease, border-bottom 0.3s ease;
             border-bottom: 3px solid transparent;
             outline: none; /* Remove outline on focus */
+            flex-grow: 1; /* Make buttons grow to fill space */
+            text-align: center;
         }
         .tab-button.active {
             color: var(--primary-color);
@@ -286,6 +290,9 @@
             <button class="tab-button" id="cropper-tab" onclick="showTab('cropper')">
                 <i class="fas fa-crop"></i> Bill Cropper
             </button>
+            <button class="tab-button" id="hybrid-tab" onclick="showTab('hybrid')">
+                <i class="fas fa-magic"></i> Hybrid Bill
+            </button>
         </div>
 
         <div id="leaflet-section" class="form-section">
@@ -330,6 +337,27 @@
             {% endif %}
         </div>
 
+        <div id="hybrid-section" class="form-section">
+            <form action="{{ url_for('process_hybrid_bills_file') }}" method="post" enctype="multipart/form-data">
+                <label for="pdf_file_hybrid">Upload Full Meesho Bill (PDF) for Hybrid Generation:</label>
+                <input type="file" name="pdf_file" id="pdf_file_hybrid" accept=".pdf" required>
+                <button type="submit"><i class="fas fa-cogs"></i> Generate Hybrid Bills</button>
+            </form>
+
+            {% if generated_hybrid_filename and feature == 'hybrid' %}
+                <div class="success-box">
+                    <h3><i class="fas fa-check-circle"></i> Hybrid Bills Ready!</h3>
+                    <p>Click below to download your Hybrid Bill PDF:</p>
+                    <a href="{{ url_for('download_file', filename=generated_hybrid_filename) }}" download>
+                        {{ generated_hybrid_filename }}
+                    </a>
+                    <p class="process-another">
+                        Need to generate more? <a href="{{ url_for('upload_form', feature='hybrid') }}">Generate another hybrid bill</a>
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+
     </div>
 
     <script>
@@ -357,13 +385,14 @@
 
         // Logic to set the active tab on page load (based on Flask context or URL parameters)
         document.addEventListener('DOMContentLoaded', function() {
-            // Check the 'feature' variable passed from Flask (app.py)
-            const activeFeature = "{{ feature }}"; // 'leaflet' or 'cropper'
+            // Get the 'feature' variable passed from Flask (app.py)
+            // It will be 'leaflet', 'cropper', or 'hybrid'
+            const activeFeature = "{{ feature }}"; 
 
             if (activeFeature) {
                 showTab(activeFeature);
             } else {
-                // Default to leaflet tab if no specific feature is indicated
+                // Default to 'leaflet' tab if no specific feature is indicated
                 showTab('leaflet');
             }
         });
