@@ -19,21 +19,33 @@ CROP_RECT = fitz.Rect(0, 0, PAGE_WIDTH, 350)
 # --- Duplicated Leaflet Drawing Logic (from leaflet_maker.py, adapted for single draw) ---
 # Register emoji-capable font
 # Note: This is a duplicated part to avoid modifying leaflet_maker.py
+# In the _register_fonts_for_leaflet_draw function
+
 def _register_fonts_for_leaflet_draw():
-    # Attempt to use a system emoji font if available, otherwise fall back to Helvetica
-    emoji_font = "Helvetica"
+    emoji_font = "Helvetica" # Default fallback
     try:
-        # Windows specific font path
-        emoji_path = "C:/Windows/Fonts/seguiemj.ttf"
-        if os.path.exists(emoji_path):
-            pdfmetrics.registerFont(TTFont("EmojiFont", emoji_path))
+        # Construct path to bundled font relative to the script's location
+        # os.path.dirname(__file__) gets the directory of the current script (e.g., 'utils')
+        # '..' goes up one level (to the project root)
+        # 'fonts' enters the new fonts directory
+        # 'NotoColorEmoji.ttf' is the font file name
+        bundled_emoji_path = os.path.join(os.path.dirname(__file__), '..', 'fonts', 'NotoColorEmoji.ttf')
+
+        if os.path.exists(bundled_emoji_path):
+            pdfmetrics.registerFont(TTFont("EmojiFont", bundled_emoji_path))
             emoji_font = "EmojiFont"
-        # Add common Linux font path if needed for deployment
-        # elif os.path.exists("/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf"):
-        #     pdfmetrics.registerFont(TTFont("EmojiFont", "/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf"))
-        #     emoji_font = "EmojiFont"
+        # You can keep the Windows path as a fallback for local Windows development,
+        # but it will be checked after the bundled path.
+        elif os.path.exists("C:/Windows/Fonts/seguiemj.ttf"):
+            pdfmetrics.registerFont(TTFont("EmojiFont", "C:/Windows/Fonts/seguiemj.ttf"))
+            emoji_font = "EmojiFont"
+        # Remove or comment out any other Linux system paths (like /usr/share/fonts...)
+        # as the bundled font is the primary source now.
+
     except Exception as e:
-        print(f"Warning: Could not register emoji font for hybrid bill: {e}. Falling back to Helvetica.")
+        # It's good to log this warning during development if the font isn't found.
+        # In production, ensure the font is always bundled correctly.
+        print(f"Warning: Could not register emoji font: {e}. Falling back to Helvetica.")
     return emoji_font
 
 # Duplicated and adapted leaflet drawing logic
