@@ -19,33 +19,21 @@ CROP_RECT = fitz.Rect(0, 0, PAGE_WIDTH, 350)
 # --- Duplicated Leaflet Drawing Logic (from leaflet_maker.py, adapted for single draw) ---
 # Register emoji-capable font
 # Note: This is a duplicated part to avoid modifying leaflet_maker.py
-# In the _register_fonts_for_leaflet_draw function
-
 def _register_fonts_for_leaflet_draw():
-    emoji_font = "Helvetica" # Default fallback
+    # Attempt to use a system emoji font if available, otherwise fall back to Helvetica
+    emoji_font = "Helvetica"
     try:
-        # Construct path to bundled font relative to the script's location
-        # os.path.dirname(__file__) gets the directory of the current script (e.g., 'utils')
-        # '..' goes up one level (to the project root)
-        # 'fonts' enters the new fonts directory
-        # 'NotoColorEmoji.ttf' is the font file name
-        bundled_emoji_path = os.path.join(os.path.dirname(__file__), '..', 'fonts', 'NotoColorEmoji.ttf')
-
-        if os.path.exists(bundled_emoji_path):
-            pdfmetrics.registerFont(TTFont("EmojiFont", bundled_emoji_path))
+        # Windows specific font path
+        emoji_path = "C:/Windows/Fonts/seguiemj.ttf"
+        if os.path.exists(emoji_path):
+            pdfmetrics.registerFont(TTFont("EmojiFont", emoji_path))
             emoji_font = "EmojiFont"
-        # You can keep the Windows path as a fallback for local Windows development,
-        # but it will be checked after the bundled path.
-        elif os.path.exists("C:/Windows/Fonts/seguiemj.ttf"):
-            pdfmetrics.registerFont(TTFont("EmojiFont", "C:/Windows/Fonts/seguiemj.ttf"))
-            emoji_font = "EmojiFont"
-        # Remove or comment out any other Linux system paths (like /usr/share/fonts...)
-        # as the bundled font is the primary source now.
-
+        # Add common Linux font path if needed for deployment
+        # elif os.path.exists("/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf"):
+        #     pdfmetrics.registerFont(TTFont("EmojiFont", "/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf"))
+        #     emoji_font = "EmojiFont"
     except Exception as e:
-        # It's good to log this warning during development if the font isn't found.
-        # In production, ensure the font is always bundled correctly.
-        print(f"Warning: Could not register emoji font: {e}. Falling back to Helvetica.")
+        print(f"Warning: Could not register emoji font for hybrid bill: {e}. Falling back to Helvetica.")
     return emoji_font
 
 # Duplicated and adapted leaflet drawing logic
@@ -73,12 +61,24 @@ def _draw_single_leaflet(c_obj, name: str, x_pos: float, y_pos: float, width: fl
 
     text_obj.setTextOrigin(text_x_start, text_y_start)
 
-    text_obj.textLine(f"🙏 Thank you {name} ji!")
-    text_obj.textLine("Aapka order humare liye khaas hai 💛")
-    text_obj.textLine("Agar pasand aaye toh please")
-    text_obj.textLine("5-star rating dein ⭐⭐⭐⭐⭐")
-    text_obj.textLine("Agar stole pasand na aaya ho toh")
-    text_obj.textLine("WhatsApp karein 📱 7860861434")
+    text_obj.textLine("Thank you {name} ji!")
+    text_obj.textLine("Thank you for your order — it truly means a lot to us!")
+    text_obj.textLine("We hope you love your stole.")
+    text_obj.textLine("If you're happy with your purchase")
+    text_obj.textLine("we’d be thrilled if you could leave us a ")
+    text_obj.textLine("5-star review ⭐⭐⭐⭐⭐")
+    text_obj.textLine("In case there’s anything you’re not satisfied with,")
+    text_obj.textLine("please reach out to us directly on  ")
+    text_obj.textLine("WhatsApp: +91 7860861434")
+    text_obj.textLine("Wwe’ll do our best to make it right.")
+    text_obj.textLine("Your feedback helps us improve, and your support means")
+    text_obj.textLine("the world to our small business.")
+    text_obj.textLine("Thank you once again!")
+    text_obj.textLine("     ")
+    text_obj.textLine("Warm regards,")
+    text_obj.textLine("Team Mary Creations")
+    text_obj.textLine("")
+    text_obj.textLine("")
 
     c_obj.drawText(text_obj)
 
