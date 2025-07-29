@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">Meesho Helper</string>
+    
+    <!-- Activity titles -->
+    <string name="leaflet_generator">Leaflet Generator</string>
+    <string name="bill_combiner">Bill Combiner</string>
+    <string name="hybrid_bill_generator">Hybrid Bill Generator</string>
+    
+    <!-- Navigation -->
+    <string name="nav_leaflet">Leaflet</string>
+    <string name="nav_bills">Bills</string>
+    <string name="nav_hybrid">Hybrid</string>
+    
+    <!-- UI Elements -->
+    <string name="select_pdf">Select PDF File</string>
+    <string name="process">Process</string>
+    <string name="processing">Processing...</string>
+    <string name="download">Download</string>
+    <string name="share">Share</string>
+    <string name="open">Open</string>
+    
+    <!-- Messages -->
+    <string name="no_file_selected">No file selected</string>
+    <string name="file_selected">File selected: %s</string>
+    <string name="processing_complete">Processing complete!</string>
+    <string name="error_processing">Error processing file: %s</string>
+    <string name="error_no_customers">No customer names found in the PDF</string>
+    <string name="error_invalid_file">Invalid file type. Please select a PDF file.</string>
+    <string name="permission_denied">Storage permission is required to access files</string>
+    
+    <!-- Descriptions -->
+    <string name="leaflet_description">Upload Meesho order label PDF to generate personalized thank-you leaflets for customers</string>
+    <string name="bill_description">Upload Meesho bill PDF to crop and combine multiple bills into 4-up layout</string>
+    <string name="hybrid_description">Upload Meesho bill PDF to generate pages with both cropped bills and thank-you leaflets</string>
+    
+    <!-- Thank you message -->
+    <string name="thank_you_message">Dear %s,\n\nThank you for choosing us! Your order has been dispatched.\n\nFor any queries, contact us on WhatsApp: +91 7860861434\n\nPlease rate us 5 stars on the app!\n\nWith love,\nYour Seller</string>
+    
+    <!-- File provider -->
+    <string name="file_provider_authority">com.meeshohelper.fileprovider</string>
+</resources>
