@@ -1,0 +1,58 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Flask
+instance/
+.webassets-cache
+
+# Environment variables
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Android
+android-app/*.iml
+android-app/.gradle
+android-app/local.properties
+android-app/.idea/
+android-app/.DS_Store
+android-app/build/
+android-app/captures/
+android-app/.externalNativeBuild
+android-app/.cxx
+android-app/*.apk
+android-app/*.ap_
+android-app/*.aab
+
+# Gradle Wrapper
+android-app/gradle/wrapper/gradle-wrapper.properties
+
+# Local configuration file (sdk path, etc)
+android-app/local.properties
+
+# Android Studio
+android-app/app/release/
+android-app/app/debug/
+
+# Temporary files
+uploads/*
+generated/*
+/tmp/
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
