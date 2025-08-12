@@ -182,6 +182,13 @@ def download_file(filename):
         
     return send_from_directory(app.config['GENERATED_FOLDER'], filename, as_attachment=True)
 
+@app.route('/assets/<filename>')
+def serve_assets(filename):
+    """
+    Serves static asset files from the assets folder.
+    """
+    return send_from_directory('assets', filename)
+
 # --- Main Entry Point ---
 if __name__ == '__main__':
     # When running locally, set debug=True for development.

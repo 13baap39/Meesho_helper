@@ -28,20 +28,33 @@ BLOCK_HEIGHT = USABLE_HEIGHT / NUM_ROWS
 
 def register_fonts():
     """
-    Tries to register an emoji-capable font (Segoe UI Emoji on Windows).
-    Defaults to Helvetica if the font is not found.
+    Tries to register a font that supports emojis across different operating systems.
+    Defaults to Helvetica if no suitable font is found.
     """
-    emoji_font = "Helvetica"
+    font_name = "EmojiFont"
+    font_paths = [
+        # Windows paths
+        "C:/Windows/Fonts/seguiemj.ttf",
+        "C:/Windows/Fonts/segoeui.ttf",
+        # macOS paths  
+        "/System/Library/Fonts/Apple Color Emoji.ttc",
+        "/Library/Fonts/Arial Unicode MS.ttf",
+        # Linux paths
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+    ]
+    
     try:
-        # Common path for the emoji font on Windows
-        emoji_path = "C:/Windows/Fonts/seguiemj.ttf"
-        if os.path.exists(emoji_path):
-            pdfmetrics.registerFont(TTFont("EmojiFont", emoji_path))
-            emoji_font = "EmojiFont"
-        # You can add more paths for other OS like Linux or macOS here if needed
+        for font_path in font_paths:
+            if os.path.exists(font_path):
+                pdfmetrics.registerFont(TTFont(font_name, font_path))
+                return font_name
+        
+        # If no fonts found, use default Helvetica
+        return "Helvetica"
     except Exception as e:
-        print(f"Font registration warning: Could not load emoji font. {e}")
-    return emoji_font
+        print(f"Font registration warning: Could not load font. {e}")
+        return "Helvetica"
 
 def generate_leaflet_pdf(customer_names: List[str], output_pdf_path: str):
     """

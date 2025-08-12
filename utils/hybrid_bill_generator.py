@@ -14,22 +14,32 @@ CROP_RECT = fitz.Rect(0, 0, PAGE_WIDTH, 350)  # Top 350 points from each PDF pag
 
 def _register_fonts_for_leaflet_draw():
     """
-    Registers a font that supports emojis on Windows.
+    Registers a font that supports emojis on different operating systems.
     Falls back to a default font if not found.
     """
-    # This is the path to the standard emoji font on most Windows systems.
-    font_path = r"C:\Windows\Fonts\seguiemj.ttf"
+    # Try different font paths based on operating system
     font_name = "SegoeUIEmoji"
+    font_paths = [
+        # Windows paths
+        r"C:\Windows\Fonts\seguiemj.ttf",
+        r"C:\Windows\Fonts\segoeui.ttf",
+        # macOS paths
+        "/System/Library/Fonts/Apple Color Emoji.ttc",
+        "/Library/Fonts/Arial Unicode MS.ttf",
+        # Linux paths
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+    ]
     
     try:
-        if os.path.exists(font_path):
-            # Register the Segoe UI Emoji font with reportlab
-            pdfmetrics.registerFont(TTFont(font_name, font_path))
-            return font_name
-        else:
-            # If the font isn't found, print a message and use a default.
-            print(f"Font not found at '{font_path}'. Falling back to Helvetica.")
-            return "Helvetica"
+        for font_path in font_paths:
+            if os.path.exists(font_path):
+                # Register the font with reportlab
+                pdfmetrics.registerFont(TTFont(font_name, font_path))
+                return font_name
+        
+        # If no fonts found, use default
+        return "Helvetica"
     except Exception as e:
         print(f"Error loading font: {e}. Using default font 'Helvetica'.")
         return "Helvetica"

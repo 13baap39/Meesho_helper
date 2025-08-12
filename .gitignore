@@ -50,6 +50,7 @@ android-app/app/debug/
 # Temporary files
 uploads/*
 generated/*
+generated_leaflets/*
 /tmp/
 *.tmp
 
